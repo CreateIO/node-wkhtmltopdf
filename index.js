@@ -19,6 +19,9 @@ function wkhtmltopdf(input, options, callback) {
   
   var output = options.output;
   delete options.output;
+
+  var cookie = options.cookie;
+  delete options.cookie;
     
   // make sure the special keys are last
   var extraKeys = [];
@@ -32,6 +35,17 @@ function wkhtmltopdf(input, options, callback) {
   }).concat(extraKeys);
   
   var args = [wkhtmltopdf.command, '--quiet'];
+
+  // if a cookie parameter exists split it on the space between the cookie name and the web encoded cookie
+  if (cookie){
+    var cookieParts = cookie.split(" ");
+    if (cookieParts.length == 2){
+   	 args.push('--cookie');
+  	 args.push(cookieParts[0]);
+  	 args.push(cookieParts[1]);
+    }
+  }
+
   keys.forEach(function(key) {
     var val = options[key];
     if (key !== 'toc' && key !== 'cover' && key !== 'page')
